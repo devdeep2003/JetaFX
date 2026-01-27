@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ThemeToggle } from "@/app/(components)/theme-toggler";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -15,7 +17,8 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex relative">
+    
+    <div className="h-screen flex relative bg-gray-100 text-gray-900 dark:bg-black dark:text-white">
       
       {/* MOBILE OVERLAY */}
       {sidebarOpen && (
@@ -29,8 +32,9 @@ export default function DashboardPage() {
       <aside
         className={`
           fixed md:static z-50
-          h-full w-64
-          bg-black/95 border-r border-white/10
+          h-screen md:h-full w-64
+          bg-white border-r border-gray-200
+          dark:bg-black/95 dark:border-white/10
           transform transition-transform duration-300
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
@@ -38,8 +42,8 @@ export default function DashboardPage() {
         `}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center px-6 border-b border-white/10">
-          <div className="bg-white p-2 rounded-2xl">
+        <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-white/10">
+          <div className="bg-white p-2 rounded-2xl dark:bg-white">
             <Image
               src="/icons/jetafx-main-logo.png"
               alt="Jetafx Logo"
@@ -49,56 +53,77 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 px-4 py-6 space-y-2">
-          {["Dashboard", "Transactions", "Analytics", "Settings"].map(
-            (item) => (
-              <div
-                key={item}
-                className="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 cursor-pointer transition"
-                onClick={() => setSidebarOpen(false)}
-              >
-                {item}
-              </div>
-            )
-          )}
+        {/* Navigation (fills remaining height) */}
+        <nav className="flex-1 flex flex-col px-4 py-6 space-y-2">
+          <Link
+            href="/dashboard"
+            onClick={() => setSidebarOpen(false)}
+            className="block px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100
+                       dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition"
+          >
+            Dashboard
+          </Link>
+
+          <Link
+            href="/transactions"
+            onClick={() => setSidebarOpen(false)}
+            className="block px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100
+                       dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition"
+          >
+            Transactions
+          </Link>
+
+          <Link
+            href="/analytics"
+            onClick={() => setSidebarOpen(false)}
+            className="block px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100
+                       dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition"
+          >
+            Analytics
+          </Link>
+
+          <Link
+            href="/settings"
+            onClick={() => setSidebarOpen(false)}
+            className="block px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100
+                       dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition"
+          >
+            Settings
+          </Link>
         </nav>
       </aside>
 
       {/* MAIN AREA */}
-      <div className="flex-1 flex flex-col md:ml-0">
+      <div className="flex-1 flex flex-col min-h-screen">
         
         {/* TOP BAR */}
-        <header className="h-16 flex items-center justify-between px-6 border-b border-white/10 bg-black/80 backdrop-blur">
-          
-          {/* Left: Hamburger + Logo */}
+        <header
+          className="h-16 flex items-center justify-between px-6 border-b
+                     bg-white/80 dark:bg-black/80
+                     border-gray-200 dark:border-white/10 backdrop-blur"
+        >
+          {/* Left */}
           <div className="flex items-center gap-3">
-            {/* Hamburger (mobile only) */}
             <button
-              className="md:hidden text-white text-2xl"
+              className="md:hidden text-2xl"
               onClick={() => setSidebarOpen(true)}
             >
               ☰
             </button>
-{/* 
-            <Image
-              src="/icons/jetafx-main-logo.png"
-              alt="Jetafx Icon"
-              width={32}
-              height={32}
-              className="object-contain md:hidden"
-            /> */}
 
             <h1 className="text-lg font-semibold">Welcome</h1>
+            <ThemeToggle />
           </div>
 
-          {/* Right: User info */}
+          {/* Right */}
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-300 hidden sm:block">
+            <span className="text-sm text-gray-600 dark:text-gray-300 hidden sm:block">
               {Cookies.get("userEmail")}
             </span>
+
             <button
-              className="px-4 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition text-sm"
+              className="px-4 py-1.5 rounded-lg bg-red-500/10 text-red-500
+                         hover:bg-red-500/20 transition text-sm"
               onClick={logoutHandler}
             >
               Logout
@@ -107,7 +132,7 @@ export default function DashboardPage() {
         </header>
 
         {/* CONTENT */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 overflow-y-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             Dashboard
           </div>
