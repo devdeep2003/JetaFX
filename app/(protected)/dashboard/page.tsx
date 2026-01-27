@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 export default function DashboardPage() {
   // Filter states (will be used for API later) just hardcoded for now
   const [fromDate, setFromDate] = useState(Date.now().toString());
-  const [toDate, setToDate] = useState(Date.now());
+  const [toDate, setToDate] = useState(Date.now().toString());
   const [customer, setCustomer] = useState("All Customers");
 
   
@@ -53,6 +53,7 @@ export default function DashboardPage() {
               type="date"
               value={toDate}
               className="bg-transparent outline-none "
+              onChange={(e)=>setToDate(e.target.value)}
             />
           </div>
         </div>

@@ -10,6 +10,8 @@ import toast, { Toaster } from "react-hot-toast";
 import { MdArrowUpward, MdSpaceDashboard } from "react-icons/md";
 import { RiAdminFill } from "react-icons/ri";
 import { GrTransaction } from "react-icons/gr";
+import { PAGE_TITLES } from "@/lib/pageTitles";
+import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({
   children,
@@ -19,7 +21,9 @@ export default function DashboardLayout({
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropDownMasters, setDropDownMasters] = useState(false);
+  const [dropDownTransactions, setDropDownTransactions] = useState(false);
 
+  //one time welcome toast
   useEffect(() => {
     const welcomeUser = Cookies.get("welcomeToast");
     if (welcomeUser) {
@@ -28,10 +32,15 @@ export default function DashboardLayout({
     }
   }, []);
 
+  //logout handler
   const logoutHandler = () => {
     Cookies.remove("userEmail");
     router.replace("/login");
   };
+
+  //Dynamic title
+  const pathname = usePathname();
+  const title = PAGE_TITLES[pathname] || "Dashboard";
 
   return (
     <div className="h-screen flex relative bg-gray-100 text-gray-900 dark:bg-black dark:text-white">
@@ -112,13 +121,43 @@ export default function DashboardLayout({
             )}
           </div>
 
-          <Link
-            href="/transactions"
-            className="flex items-center px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10"
-          >
-            <GrTransaction size={21} className="mr-2" />
-            Transactions
-          </Link>
+          <div>
+            <button
+              onClick={() => setDropDownTransactions((p) => !p)}
+              className="hover:cursor-pointer w-full flex items-center justify-between px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10"
+            >
+              <div className="flex items-center">
+                <GrTransaction size={21} className="mr-2" />
+                Transactions
+              </div>
+              <MdArrowUpward
+                className={`transition-transform ${dropDownTransactions ? "" : "rotate-180"}`}
+              />
+            </button>
+
+            {dropDownTransactions && (
+              <div className="ml-6 mt-2 space-y-1">
+                <Link
+                  href="/transactions/ib-reports"
+                  className="block px-4 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  IB Reports
+                </Link>
+                <Link
+                  href="/transactions/customer-reports"
+                  className="block px-4 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  Customer Reports
+                </Link>
+                <Link
+                  href="/transactions/deposit-reports"
+                  className="block px-4 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  Deposit Reports
+                </Link>
+              </div>
+            )}
+          </div>
         </nav>
       </aside>
 
@@ -133,7 +172,7 @@ export default function DashboardLayout({
             >
               ☰
             </button>
-            <h1 className="text-lg font-semibold">Welcome</h1>
+            <h1 className="text-lg font-semibold">{title}</h1>
             <ThemeToggle />
           </div>
 
