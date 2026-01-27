@@ -4,12 +4,23 @@ import Image from "next/image";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/app/(components)/theme-toggler";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  //Just to greet the user for the first time and not to spam welcome on every render
+
+  useEffect(() => {
+    const welcomeUser = Cookies.get("welcomeToast");
+    if (welcomeUser) {
+      toast.success("Welcome back!");
+      Cookies.remove("welcomeToast");
+    }
+  }, []);
 
   const logoutHandler = () => {
     Cookies.remove("userEmail");
@@ -17,9 +28,8 @@ export default function DashboardPage() {
   };
 
   return (
-    
     <div className="h-screen flex relative bg-gray-100 text-gray-900 dark:bg-black dark:text-white">
-      
+      <Toaster position="top-right" />
       {/* MOBILE OVERLAY */}
       {sidebarOpen && (
         <div
@@ -95,7 +105,6 @@ export default function DashboardPage() {
 
       {/* MAIN AREA */}
       <div className="flex-1 flex flex-col min-h-screen">
-        
         {/* TOP BAR */}
         <header
           className="h-16 flex items-center justify-between px-6 border-b
@@ -123,7 +132,7 @@ export default function DashboardPage() {
 
             <button
               className="px-4 py-1.5 rounded-lg bg-red-500/10 text-red-500
-                         hover:bg-red-500/20 transition text-sm"
+                         hover:bg-red-500/20 transition text-sm hover:cursor-pointer"
               onClick={logoutHandler}
             >
               Logout

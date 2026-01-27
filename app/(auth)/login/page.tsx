@@ -32,6 +32,7 @@ export default function LoginPage() {
 
     if (matchedUser) {
       Cookies.set("userEmail", email);
+      Cookies.set("welcomeToast", "true");
       router.push("/dashboard");
     } else if (!email || !password) {
       toast.error("Fill all the fields");
