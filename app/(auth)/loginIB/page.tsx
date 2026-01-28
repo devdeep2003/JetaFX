@@ -10,54 +10,80 @@ import { ThemeToggle } from "@/app/(components)/theme-toggler";
 export default function LoginPage() {
   const router = useRouter();
 
-  // dummy users (testing only)
-  const user = [
-    { email: "test@gmail.com", password: "123456", name: "test" },
-    { email: "test1@gmail.com", password: "123456hello", name: "testhello" },
-  ];
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const formHandler = (e: React.FormEvent) => {
+  const formHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    const matchedUser = user.find(
-      (u) => u.email === email && u.password === password
-    );
-
-    if (matchedUser) {
-      Cookies.set("userEmail", email);
-      Cookies.set("welcomeToast", "true");
-      router.push("/dashboard");
-    } else if (!email || !password) {
+    if (!email || !password) {
       toast.error("Fill all the fields");
       setError("Fill all the fields");
-    } else {
-      toast.error("Invalid Credentials");
-      setError("Invalid Credentials");
+      return;
     }
 
-    setLoading(false);
+    setLoading(true);
+
+    try {
+      const res = await fetch(
+        "https://ib.jetafx.com/api/customer/master/ibMasterSignIn",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: email,
+            password: password,
+          }),
+        }
+      );
+
+      const result = await res.json();
+
+      if (result.ResponseCode === 200 && result.Response) {
+        const { IbName, Username, Id } = result.Response;
+
+        // ✅ STORE COOKIES
+        Cookies.set("ibName", IbName);
+        Cookies.set("ibUsername", Username);
+        Cookies.set("ibId", String(Id));
+        Cookies.set("welcomeToast", "true");
+
+        toast.success("Login successful");
+        router.push("/dashboard-ib");
+      } else {
+        toast.error(result.Message || "Invalid credentials");
+        setError(result.Message || "Invalid credentials");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.error("Login failed. Try again.");
+      setError("Login failed. Try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center
-                    bg-gray-100 text-gray-900
-                    dark:bg-black dark:text-white">
+    <div
+      className="min-h-screen flex items-center justify-center
+                 bg-gray-100 text-gray-900
+                 dark:bg-black dark:text-white"
+    >
       <Toaster position="top-right" />
 
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-12 px-6">
-        
         {/* LEFT — BRANDING */}
         <div className="flex flex-col justify-center space-y-8">
           <div className="flex items-center gap-4">
-            <div className="relative w-20 h-20 rounded-2xl bg-white border
-                            border-gray-200 dark:border-white/10 shadow-lg">
+            <div
+              className="relative w-20 h-20 rounded-2xl bg-white border
+                         border-gray-200 dark:border-white/10 shadow-lg"
+            >
               <Image
                 src="/icons/jetafx-main-logo.png"
                 alt="Jetafx Logo"
@@ -89,7 +115,7 @@ export default function LoginPage() {
                        dark:bg-white/10 dark:border-white/10 backdrop-blur-xl"
           >
             <div className="flex items-center justify-between mb-1">
-              <h2 className="text-2xl font-semibold">Welcome Admin</h2>
+              <h2 className="text-2xl font-semibold">Welcome IB</h2>
               <ThemeToggle />
             </div>
 
@@ -98,7 +124,6 @@ export default function LoginPage() {
             </p>
 
             <form className="space-y-5" onSubmit={formHandler}>
-              
               {/* Email */}
               <div>
                 <label className="block text-sm mb-1 text-gray-600 dark:text-gray-300">
@@ -145,11 +170,11 @@ export default function LoginPage() {
                   Forgot password?
                 </a>
 
-                  <a
-                  href="/loginIB"
+                <a
+                  href="/login"
                   className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
                 >
-                  Login as IB
+                  Login as Admin
                 </a>
               </div>
 
@@ -158,11 +183,12 @@ export default function LoginPage() {
               {/* Submit */}
               <button
                 type="submit"
+                disabled={loading}
                 className="w-full rounded-lg py-2.5 font-medium text-white
                            bg-indigo-600 hover:bg-indigo-500 transition
-                           shadow-lg shadow-indigo-600/30"
+                           shadow-lg shadow-indigo-600/30 disabled:opacity-60"
               >
-                {loading ? "..." : "Sign in"}
+                {loading ? "Signing in..." : "Sign in"}
               </button>
             </form>
           </div>

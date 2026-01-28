@@ -475,16 +475,7 @@ export default function DepositReportsPage() {
               <FiRefreshCw /> Clear Filters
             </button>
 
-            <button
-              onClick={() => {
-                setMode("create");
-                setSelectedDeposit(null);
-                setOpenModal(true);
-              }}
-              className="flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg hover:shadow-xl transition-all px-8 py-4 font-semibold text-sm"
-            >
-              <FiPlus /> Create Deposit
-            </button>
+            
 
             <button
               onClick={downloadPDF}
@@ -498,7 +489,11 @@ export default function DepositReportsPage() {
       </div>
 
       {/* ================= TABLE ================= */}
-      <div ref={reportRef} className="bg-white/80 dark:bg-black/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl overflow-hidden shadow-xl">
+     <div
+  ref={reportRef}
+  className="pdf-safe bg-white border border-gray-200 rounded-2xl overflow-hidden"
+>
+
         <div className="p-6 border-b border-gray-200/50">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">
             Deposit Records

@@ -22,8 +22,7 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [dropDownMasters, setDropDownMasters] = useState(false);
-  const [dropDownTransactions, setDropDownTransactions] = useState(false);
+
 
   //one time welcome toast
   useEffect(() => {
@@ -37,7 +36,7 @@ export default function DashboardLayout({
   //logout handler
   const logoutHandler = () => {
     Cookies.remove("userEmail");
-    router.replace("/login");
+    router.replace("/loginIB");
   };
 
   //Dynamic title
@@ -82,80 +81,14 @@ export default function DashboardLayout({
 
         {/* NAV */}
         <nav className="flex-1 flex flex-col px-4 py-6 space-y-2">
-          <Link
-            href="/dashboard"
-            className="flex items-center px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10"
-          >
-            <MdSpaceDashboard size={21} className="mr-2" />
-            Dashboard
-          </Link>
+      
 
           {/* Masters */}
           <div>
-            <button
-              onClick={() => setDropDownMasters((p) => !p)}
-              className="hover:cursor-pointer w-full flex items-center justify-between px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10"
-            >
-              <div className="flex items-center">
-                <RiAdminFill size={21} className="mr-2" />
-                Masters
-              </div>
-              <MdArrowUpward
-                className={`transition-transform ${dropDownMasters ? "" : "rotate-180"}`}
-              />
-            </button>
-
-            {dropDownMasters && (
-              <div className="ml-6 mt-2 space-y-1">
-                <Link
-                  href="/masters/ib"
-                  className="block px-4 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-white/10"
-                >
-                  IB
-                </Link>
-                <Link
-                  href="/masters/customers"
-                  className="block px-4 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-white/10"
-                >
-                  Customers
-                </Link>
-              </div>
-            )}
-          </div>
-
-          <div>
-            <button
-              onClick={() => setDropDownTransactions((p) => !p)}
-              className="hover:cursor-pointer w-full flex items-center justify-between px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10"
-            >
-              <div className="flex items-center">
-                <GrTransaction size={21} className="mr-2" />
-                Transactions
-              </div>
-              <MdArrowUpward
-                className={`transition-transform ${dropDownTransactions ? "" : "rotate-180"}`}
-              />
-            </button>
-
-            {dropDownTransactions && (
-              <div className="ml-6 mt-2 space-y-1">
-                <Link
-                  href="/transactions/ib-reports"
-                  className="block px-4 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-white/10"
-                >
-                  IB Reports
-                </Link>
-                <Link
-                  href="/transactions/customer-reports"
-                  className="block px-4 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-white/10"
-                >
-                  Customer Reports
-                </Link>
-              </div>
-            )}
+            
 
              <Link
-            href="/deposit-reports"
+            href="/dashboard-ib"
             className="flex items-center px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10"
           >
             <IoCashOutline size={21} className="mr-2" />
@@ -182,7 +115,7 @@ export default function DashboardLayout({
 
           <div className="flex items-center gap-4">
             <span className="text-sm hidden sm:block">
-              {Cookies.get("userEmail")}
+              {Cookies.get("ibUsername")}
             </span>
             <button
               onClick={logoutHandler}
